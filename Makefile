@@ -24,3 +24,6 @@ release:
 .DEFAULT_GOAL := ci
 
 .PHONY: $(TARGETS)
+
+port-forward:
+	kubectl port-forward --address=0.0.0.0 kuard 5000:8080
