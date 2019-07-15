@@ -25,6 +25,7 @@ cleanup:
 config.yaml: hosts
 	docker-compose exec server cat /output/kubeconfig.yaml > $@
 	sed -i -e 's/localhost/k3s/' $@
+	kubectl get node
 
 hosts:
 	grep "$$(ip route | grep default | awk '{print $$3}') k3s" /etc/hosts || \
