@@ -8,6 +8,11 @@ up:
 
 setup: config.yaml hosts
 
+tiller:
+	kubectl create serviceaccount --namespace kube-system tiller
+	kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+	helm init --service-account tiller
+
 metrics-server:
 	$(eval DOWNLOAD_URL := $(shell  curl --silent "https://api.github.com/repos/kubernetes-incubator/metrics-server/releases/latest" | jq -r .tarball_url))
 	$(eval DOWNLOAD_VERSION := $(shell echo $(DOWNLOAD_URL) | grep -o '[^/v]*$$'))
