@@ -8,6 +8,14 @@ up:
 
 setup: config.yaml hosts
 
+metrics-server:
+	$(eval DOWNLOAD_URL := $(shell  curl --silent "https://api.github.com/repos/kubernetes-incubator/metrics-server/releases/latest" | jq -r .tarball_url))
+	$(eval DOWNLOAD_VERSION := $(shell echo $(DOWNLOAD_URL) | grep -o '[^/v]*$$'))
+	curl -Ls $(DOWNLOAD_URL) -o $@-$(DOWNLOAD_VERSION).tar.gz
+	mkdir $@
+	tar -xzf $@-$(DOWNLOAD_VERSION).tar.gz --directory metrics-server --strip-components 1
+	kubectl create -f $@/deploy/1.8+/
+
 cleanup:
 	-docker-compose rm -f -s
 	-docker volume rm k3s_k3s-server
