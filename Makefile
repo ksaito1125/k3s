@@ -8,9 +8,12 @@ up:
 
 setup: config.yaml hosts
 
+tiller-ls:
+	kubectl --namespace=kube-system get all -l app=helm
+
 tiller:
-	kubectl create serviceaccount --namespace kube-system tiller
-	kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+	-kubectl create serviceaccount --namespace kube-system tiller
+	-kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
 	helm init --service-account tiller
 
 metrics-server:
@@ -30,6 +33,7 @@ cleanup:
 config.yaml: hosts
 	docker-compose exec server cat /output/kubeconfig.yaml > $@
 	sed -i -e 's/localhost/k3s/' $@
+	-cp config.yaml ~/.kube/config
 	kubectl get node
 
 hosts:
