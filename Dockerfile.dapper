@@ -1,5 +1,15 @@
 FROM golang:1.13.5-alpine3.10
 
+ENV http_proxy=http://proxy.toshiba.co.jp:8080
+ENV https_proxy=http://proxy.toshiba.co.jp:8080
+ENV  no_proxy=toshiba.co.jp,*.toshiba.co.jp,133.,10.,localhost,169.254.169.254,s3.ap-northeast-1.amazonaws.com,dynamodb.ap-northeast-1.amazonaws.com,dkr.ecr.ap-northeast-1.amazonaws.com,logs.ap-northeast-1.amazonaws.com
+RUN apk add --update ca-certificates curl \
+ && curl http://www.iss.toshiba.co.jp/services/ss/ca/manual/certificate/toshibaca.cer -o /usr/share/ca-certificates/toshibaca.cer \
+ && curl http://www.iss.toshiba.co.jp/services/ns/cloud_proxy/certificate/CertEmulationCA.crt -o /usr/share/ca-certificates/CertEmulationCA.crt \
+ && echo toshibaca.cer >> /etc/ca-certificates.conf \
+ && echo CertEmulationCA.crt >> /etc/ca-certificates.conf \
+ && update-ca-certificates
+
 RUN apk -U --no-cache add bash git gcc musl-dev docker vim less file curl wget ca-certificates jq linux-headers zlib-dev tar zip squashfs-tools npm coreutils \
     python3 py3-pip python3-dev openssl-dev libffi-dev libseccomp libseccomp-dev make libuv-static
 RUN pip3 install 'tox==3.6.0'
