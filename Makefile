@@ -8,7 +8,7 @@ TARGETS := $(shell ls scripts | grep -v \\.sh)
 	@mv .dapper.tmp .dapper
 
 $(TARGETS): .dapper
-	./.dapper $@
+	./.dapper -m cp $@
 
 trash: .dapper
 	./.dapper -m bind trash
