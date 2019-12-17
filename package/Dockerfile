@@ -7,8 +7,9 @@ RUN cd image/bin && \
     rm -f k3s && \
     ln -s k3s-server k3s
 
-FROM scratch
+FROM alpine:3.10
 COPY --from=base /image /
+RUN apk add --no-cache -U nfs-utils nmap bind-tools
 RUN mkdir -p /etc && \
     echo 'hosts: files dns' > /etc/nsswitch.conf
 RUN chmod 1777 /tmp
